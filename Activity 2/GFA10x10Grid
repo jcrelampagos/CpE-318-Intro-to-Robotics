@@ -1,0 +1,117 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define N 10
+#define M 10
+
+class QItem {
+public:
+	int row;
+	int col;
+	int dist;
+	QItem(int x, int y, int w)
+		: row(x), col(y), dist(w)
+	{
+	}
+};
+
+int minDistance(char grid[N][M])
+{
+	QItem source(0, 0, 0);
+
+	bool visited[N][M];
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++)
+		{
+			if (grid[i][j] == '=')
+				visited[i][j] = true;
+			else
+				visited[i][j] = false;
+
+			// Finding source
+			if (grid[i][j] == 's')
+			{
+			source.row = i;
+			source.col = j;
+			}
+		}
+	}
+
+	queue<QItem> q;
+	q.push(source);
+	visited[source.row][source.col] = true;
+
+	while (!q.empty())
+	{
+		QItem p = q.front();
+		q.pop();
+
+		// destination found
+		if (grid[p.row][p.col] == 'd')
+			return p.dist;
+
+		// moving up
+		if (p.row - 1 >= 0 && visited[p.row - 1][p.col] == false)
+		{
+			q.push(QItem(p.row - 1, p.col, p.dist + 1));
+			visited[p.row - 1][p.col] = true;
+		}
+
+		// moving down
+		if (p.row + 1 < N && visited[p.row + 1][p.col] == false)
+		{
+			q.push(QItem(p.row + 1, p.col, p.dist + 1));
+			visited[p.row + 1][p.col] = true;
+		}
+
+		// moving left
+		if (p.col - 1 >= 0 && visited[p.row][p.col - 1] == false)
+		{
+			q.push(QItem(p.row, p.col - 1, p.dist + 1));
+			visited[p.row][p.col - 1] = true;
+		}
+
+		// moving right
+		if (p.col + 1 < M && visited[p.row][p.col + 1] == false)
+		{
+			q.push(QItem(p.row, p.col + 1, p.dist + 1));
+			visited[p.row][p.col + 1] = true;
+		}
+	}
+
+	return -1;
+}
+
+int main()
+{
+	char grid[N][M] = { 	{ '=', '*', '=', '*','*','*','*','*','*','*' },
+				{ '*', '=', '*', '*','*','*','=','*','*','*' },
+				{ '=', '*', '*', '*','*','*','=','*','*','*' },
+				{ '=', '*', '=', '*','*','*','=','s','*','*' },
+				{ '=', '=', '*', '*','*','*','*','=','=','*' },
+				{ '=', '*', '*', '*','*','*','*','*','*','*' },
+				{ '=', '*', '=', '*','*','*','*','=','*','*' },
+				{ '*', '=', '*', '*','*','=','=','*','*','*' },
+				{ '=', '*', '*', '*','=','*','*','*','*','*' },
+				{ 'd', '*', '*', '*','=','*','*','*','*','*' }
+			};
+	  cout 	<< "* = Open Path" << endl
+		<< "= = Obstacle" << endl
+		<< "s = Starting Position"<< endl
+		<< "d = Goal"<< endl<< endl;
+
+
+	for(int i=0;i<N;i++)
+	{
+		for(int j=0;j<M;j++)
+		{
+			cout << grid[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	cout <<endl<< "Shortest Path: " << minDistance(grid) << endl;
+
+	return 0;
+}
